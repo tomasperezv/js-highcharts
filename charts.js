@@ -79,22 +79,16 @@ window.Charts = (function(namespace) {
 
     var _draw = function(options) {
 
+      if (typeof window.theme !== 'undefined') {
+        var highchartsOptions = Highcharts.setOptions(window.theme);
+      }
+
       $(options.element).highcharts({
-        chart: {
-          zoomType: 'x',
-          spacingRight: 20
-        },
         title: {
           text: options.title
         },
-        subtitle: {
-          text: document.ontouchstart === undefined ?
-            'Click and drag in the plot area to zoom in' :
-            'Drag your finger over the plot to zoom in'
-        },
         xAxis: {
           type: 'datetime',
-          maxZoom: 10 * 24 * 3600000,
           title: {
             text: null
           }
@@ -133,13 +127,14 @@ window.Charts = (function(namespace) {
           }
         },
         series: [{
-          type: 'area',
-          name: 'Number of rows',
-          pointInterval: 24 * 3600 * 1000,
-          pointStart: Date.UTC(2013, 2, 24),
+          name: options.title,
           data: options.data
         }]
       });
+
+      result = null;
+
+      return this;
 
     };
 
@@ -189,8 +184,6 @@ window.Charts = (function(namespace) {
 
       _attachEvents(script);
 
-      return this;
-
     };
 
     /**
@@ -226,6 +219,8 @@ window.Charts = (function(namespace) {
         _draw(options);
 
       }
+
+      return this;
 
     };
 
