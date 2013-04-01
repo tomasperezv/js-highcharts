@@ -1,262 +1,260 @@
+/**
+ * @author tom@0x101.com
+ */
+
 if (typeof window.Charts === 'undefined') {
-  window.Charts = {};
+	window.Charts = {};
 }
 
 window.Charts = (function(namespace) {
 
   var Charts = function() {
 
-    /**
-     * @type {Boolean} loaded
-     */
-
+		/**
+		 * @type {Boolean} loaded
+		 */
+	
     var loaded = false;
+	
+		/**
+		 * @type {Array} data
+		 */
+	
+		var data = null;
 
-    /**
-     * @type {Array} data
-     */
+		/**
+		 * @type {Object} result
+		 */
 
-    var data = null;
+		var result = {};
 
-    /**
-     * @type {Array} result
-     */
+		/**
+		 * @type {Object} callbacks
+		 * @private
+		 */
 
-    var result = null;
+		var callbacks = {
+			load: [],
+			loadData: [],
+			transform: []
+		};
 
-    /**
-     * @type {Object} callbacks
-     * @private
-     */
+		/**
+		 * @type {Object} constants
+		 * @private
+		 */
 
-    var callbacks = {
-      load: [],
-      loadData: [],
-      transform: []
-    };
+		var constants = {
 
-    /**
-     * @type {Object} constants
-     * @private
-     */
+			/**
+			 * @type {String} path
+			 */
 
-    var constants = {
+			path: 'http://code.highcharts.com/highcharts.js'
 
-      /**
-       * @type {String} path
-       */
+		};
+	
+		/**
+		 * @method _dispatch
+		 * @param {String} event
+		 * @param {Integer} id
+		 * @private
+		 */
+	
+    var _dispatch = function(event, id) {
 
-      path: 'http://code.highcharts.com/highcharts.js'
+			var listeners = callbacks[event];
 
-    };
+			for (var i = 0; i < listeners.length; i++) {
 
-    /**
-     * @method _dispatch
-     * @param {String} event
-     * @private
-     */
+				if (typeof listeners[i] === 'function' && 
+						(typeof listeners[i].id === 'undefined' || listeners[i].id === id)) {
 
-    var _dispatch = function(event) {
+					listeners[i](id);
 
-      var listeners = callbacks[event];
+				}
 
-      for (var i = 0; i < listeners.length; i++) {
-        if (typeof listeners[i] === 'function') {
-          listeners[i]();
-        }
-      }
+			}
 
-      // Clear the listeners.
-      callbacks[event] = [];
+			if (typeof id === 'undefined') {
+				callbacks[event] = [];
+			}
 
-    };
+		};
 
-    /**
-     * @param {Object} options
-     * @method _draw
-     * @private
-     */
+		/**
+		 * @param {Object} options
+		 * @method _draw
+		 * @private
+		 */
 
-    var _draw = function(options) {
+		var _draw = function(options) {
 
-      if (typeof window.theme !== 'undefined') {
-        var highchartsOptions = Highcharts.setOptions(window.theme);
-      }
+			if (typeof window.theme !== 'undefined') {
+				var highchartsOptions = Highcharts.setOptions(window.theme);
+			}
 
-      $(options.element).highcharts({
-        title: {
-          text: options.title
-        },
-        xAxis: {
-          type: 'datetime',
-          title: {
-            text: null
-          }
-        },
-        yAxis: {
-          title: {
-            text: options.yTitle
-          }
-        },
-        tooltip: {
-          shared: true
-        },
-        legend: {
-          enabled: false
-        },
-        plotOptions: {
-          area: {
-            fillColor: {
-              linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
-              stops: [
-                [0, Highcharts.getOptions().colors[0]],
-                [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-              ]
-            },
-            lineWidth: 1,
-            marker: {
-              enabled: false
-            },
-            shadow: false,
-            states: {
-              hover: {
-                lineWidth: 1
-              }
-            },
-            threshold: null
-          }
-        },
-        series: [{
-          name: options.title,
-          data: options.data
-        }]
-      });
+			$(options.element).highcharts({
+				title: {
+					text: options.title
+				},
+				xAxis: {
+					type: 'datetime',
+					title: {
+						text: null
+					}
+				},
+				yAxis: {
+					title: {
+						text: options.yTitle
+					}
+				},
+				tooltip: {
+					shared: true
+				},
+				legend: {
+					enabled: false
+				},
+				series: [{
+					name: options.title,
+					data: options.data
+				}]
+			});
 
-      result = null;
-
-      return this;
+		  return this;
 
     };
-
+	
     /**
-     * Inject the highcharts library
-     *
-     * @method load
-     * @public
-     */
-
-    this.load = function() {
-
+		 * Inject the highcharts library
+		 *
+		 * @method load
+		 * @public
+		 */
+		
+		this.load = function() {
+		
 			this.Util.injectScript(constants.path, function() {
-        loaded = true;
-        _dispatch('load');
-      });
-
-    };
-
-    /**
-     * @param {Object} args
-     *   {String} args.title
-     * @method draw
-     * @public
-     */
-
-    this.draw = function(args) {
-
-      if (result === null) {
-
-        var self = this;
-        callbacks.transform.push(function() {
-          self.draw(args);
-        });
-
-      } else {
-
-        if (typeof args === 'undefined') {
-          args = {};
-        }
-
-        var options = {
-          element: args.container || null,
-          title: args.title || '',
-          yTitle: args.yTitle || '',
-          source: args.source || null,
-          data: result
-        };
-
-        _draw(options);
-
-      }
-
-      return this;
-
-    };
-
-    /**
-     * @method loadData
-     */
-
-    this.loadData = function(args) {
-
-      if (!loaded) {
-
-        var self = this;
-        callbacks.load.push(function() {
-          self.loadData(args);
-        });
-
-        this.load();
-
-      } else {
-
-        if (typeof args === 'undefined') {
-          args = {};
-        }
-
-        var options = {
-          source: args.source || '',
-          params: args.params || null
-        };
-
-        this.Util.fetch(function(result) {
+					loaded = true;
+					_dispatch('load');
+			});
+		
+		};
+		
+		/**
+		 * @param {Object} args
+		 *   {String} args.title
+		 * @method draw
+		 * @public
+		 */
+		
+		this.draw = function(args, id) {
+		
+			if (typeof id === 'undefined') {
+		
+				var self = this;
+				(function(id) {
+		
+					var callback = function() {
+						self.draw(args, id);
+					};
+		
+					callback.id = this.callerId;
+					callbacks.transform.push(callback);
+			
+				})(self.callerId);
+		
+			} else if (typeof result[id] !== 'undefined') {
+		
+				if (typeof args === 'undefined') {
+					args = {};
+				}
+		
+				var options = {
+					element: args.container || null,
+					title: args.title || '',
+					yTitle: args.yTitle || '',
+					source: args.source || null,
+					data: result[id]
+				};
+		
+				_draw(options);
+		
+			}
+		
+			return this;
+		
+		};
+		
+		/**
+		 * @method loadData
+		 */
+		
+		this.loadData = function(args) {
+		
+			if (!loaded) {
+		
+				var self = this;
+				callbacks.load.push(function() {
+					self.loadData(args);
+				});
+		
+				this.load();
+		
+			} else {
+		
+				if (typeof args === 'undefined') {
+					args = {};
+				}
+		
+				var options = {
+					source: args.source || '',
+					params: args.params || null
+				};
+		
+				this.Util.fetch(function(result) {
 					data = result;
-					_dispatch('loadData');
-        }, options);
-
-      }
-
-      return this;
-
+						_dispatch('loadData');
+				}, options);
+			}
+		
+			return this;
+		
+		};
+		
+		/**
+		 * @param {Function} callback
+		 * @param {Integer} id 
+		 * @method transform
+		 * @public
+		 */
+		
+		this.transform = function(callback, id) {
+		
+			if (data === null) {
+		
+				var callerId = this.Util.randomId();
+		
+				var self = this;
+				callbacks.loadData.push(function() {
+					self.transform(callback, callerId);
+				});
+		
+				this.callerId = callerId;
+		
+			} else {
+				result[id] = callback(data);
+				_dispatch('transform', id);
+			}
+		
+			return this;
+		
     };
-
-    /**
-     * @param {Function} callback
-     * @method transform
-     * @public
-     */
-
-    this.transform = function(callback) {
-
-      if (data === null) {
-
-        var self = this;
-        callbacks.loadData.push(function() {
-          self.transform(callback);
-        });
-
-      } else {
-        result = callback(data);
-        _dispatch('transform');
-      }
-
-      return this;
-
-    };
-
+	
   };
 
-  namespace = new Charts();
+	namespace = new Charts();
 
-  return namespace;
+	return namespace;
 
 })(window.Charts);

@@ -1,3 +1,6 @@
+/**
+ * @author tom@0x101.com
+ */
 if (typeof window.Charts === 'undefined') {
   window.Charts = {};
 }
@@ -31,6 +34,16 @@ window.Charts = (function(namespace) {
 	};
 
   var Util = function() {
+
+		/**
+		 * @return {String}
+		 * @method randomId
+		 * @public
+		 */
+
+		this.randomId = function() {
+			return Math.floor((Math.random()*1000)+1);
+		};
 
 		/**
 		 * @param {String} path 
@@ -99,3 +112,12 @@ window.Charts = (function(namespace) {
   return namespace;
 
 })(window.Charts);
+/**
+ *  
+ */
+/**
+ *  
+ */
+/**
+ *  
+ */
