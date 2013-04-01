@@ -76,6 +76,25 @@ window.Charts = (function(namespace) {
 
 		};
 
+    /**
+     * @return {HTMLElement} element
+     * @method injectContainer
+     * @public
+     */
+
+    this.injectContainer = function() {
+
+      var divElement = document.createElement('div');
+
+			divElement.className = 'highchart';
+
+      var body = document.getElementsByTagName('body')[0];
+      body.appendChild(divElement);
+
+      return divElement;
+
+    };
+
 		/**
 		 * @param {Function} onSuccess
 		 * @param {Object} options 

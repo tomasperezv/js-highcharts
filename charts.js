@@ -11,6 +11,12 @@ window.Charts = (function(namespace) {
   var Charts = function() {
 
 		/**
+		 * @type {Array} completedIds
+		 */
+
+		var completedIds = [];
+
+		/**
 		 * @type {Boolean} loaded
 		 */
 	
@@ -55,7 +61,7 @@ window.Charts = (function(namespace) {
 		};
 	
 		/**
-		 * @method _dispatch
+		 * @metho	{String} event 
 		 * @param {String} event
 		 * @param {Integer} id
 		 * @private
@@ -64,14 +70,10 @@ window.Charts = (function(namespace) {
     var _dispatch = function(event, id) {
 
 			var listeners = callbacks[event];
-
 			for (var i = 0; i < listeners.length; i++) {
 
-				if (typeof listeners[i] === 'function' && 
-						(typeof listeners[i].id === 'undefined' || listeners[i].id === id)) {
-
+				if (typeof listeners[i] === 'function' && (typeof listeners[i].id === 'undefined' || listeners[i].id === id)) {
 					listeners[i](id);
-
 				}
 
 			}
@@ -92,6 +94,11 @@ window.Charts = (function(namespace) {
 
 			if (typeof window.theme !== 'undefined') {
 				var highchartsOptions = Highcharts.setOptions(window.theme);
+			}
+
+			// Insert automaticall the div container for the chart
+			if (options.element === null) {
+				options.element = window.Charts.Util.injectContainer();
 			}
 
 			$(options.element).highcharts({
@@ -121,7 +128,7 @@ window.Charts = (function(namespace) {
 				}]
 			});
 
-		  return this;
+			return this;
 
     };
 	
@@ -164,8 +171,10 @@ window.Charts = (function(namespace) {
 			
 				})(self.callerId);
 		
-			} else if (typeof result[id] !== 'undefined') {
-		
+			} else if (typeof result[id] !== 'undefined' && completedIds.indexOf(id) === -1) {
+
+				completedIds.push(id);
+
 				if (typeof args === 'undefined') {
 					args = {};
 				}
