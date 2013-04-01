@@ -246,19 +246,14 @@ window.Charts = (function(namespace) {
         }
 
         var options = {
-          source: args.source || ''
+          source: args.source || '',
+          params: args.params || null
         };
 
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function() {
-          if (request.readyState === 4) {
-            data = JSON.parse(request.responseText);
-            _dispatch('loadData');
-          }
-        };
-
-        request.open('get', options.source, '', true);
-        request.send();
+        this.Util.fetch(function(result) {
+					data = result;
+					_dispatch('loadData');
+        }, options);
 
       }
 
