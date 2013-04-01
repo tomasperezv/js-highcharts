@@ -7,52 +7,53 @@ if (typeof window.Charts === 'undefined') {
 
 window.Charts = (function(namespace) {
 
-	/**
-	 * @param {Object} params
-	 * @return {String}
-	 * @method _getURL  
-	 * @private
-	 */
+    /**
+     * @param {Object} params
+     * @return {String}
+     * @method _getURL  
+     * @private
+     */
 
-	var _getURL = function(params) {
+    var _getURL = function(params) {
 
-		var url = '';
-		if (params !== null) {
-			for (var key in params) {
-				if (params.hasOwnProperty(key)) {
-					if (url.length > 0) {
-						// Not the first parameter, add '&'
-						url += '&';
-					}
-					url += key + '=' + encodeURIComponent(params[key]);
-				}
-			}
-		}
+      var url = '';
 
-		return url;
+      if (params !== null) {
+        for (var key in params) {
+          if (params.hasOwnProperty(key)) {
+            if (url.length > 0) {
+              // Not the first parameter, add '&'
+              url += '&';
+            }
+            url += key + '=' + encodeURIComponent(params[key]);
+          }
+        }
+      }
 
-	};
+      return url;
+
+    };
 
   var Util = function() {
 
-		/**
-		 * @return {String}
-		 * @method randomId
-		 * @public
-		 */
+    /**
+     * @return {String}
+     * @method randomId
+     * @public
+     */
 
-		this.randomId = function() {
-			return Math.floor((Math.random()*1000)+1);
-		};
+    this.randomId = function() {
+      return Math.floor((Math.random()*1000)+1);
+    };
 
-		/**
-		 * @param {String} path 
-		 * @param {Function} onLoad
-		 * @method injectScript  
-		 * @public
-		 */
+    /**
+     * @param {String} path 
+     * @param {Function} onLoad
+     * @method injectScript  
+     * @public
+     */
 
-		this.injectScript = function(path, onLoad) {
+    this.injectScript = function(path, onLoad) {
 
       var script = document.createElement('script');
 
@@ -74,7 +75,7 @@ window.Charts = (function(namespace) {
         script.onload = onLoad;
       }
 
-		};
+    };
 
     /**
      * @return {HTMLElement} element
@@ -86,7 +87,7 @@ window.Charts = (function(namespace) {
 
       var divElement = document.createElement('div');
 
-			divElement.className = 'highchart';
+      divElement.className = 'highchart';
 
       var body = document.getElementsByTagName('body')[0];
       body.appendChild(divElement);
@@ -95,34 +96,34 @@ window.Charts = (function(namespace) {
 
     };
 
-		/**
-		 * @param {Function} onSuccess
-		 * @param {Object} options 
-		 * @method fetch
-		 * @public
-		 */
+    /**
+     * @param {Function} onSuccess
+     * @param {Object} options 
+     * @method fetch
+     * @public
+     */
 
-		this.fetch = function(onSuccess, options) {
+    this.fetch = function(onSuccess, options) {
 
-			var request = new XMLHttpRequest();
-			request.onreadystatechange = function() {
-				if (request.readyState === 4 && typeof onSuccess === 'function') {
-					try {
-						var data = JSON.parse(request.responseText);
-						onSuccess(data);
-					} catch(e) {
-						// Error parsing the data from the service
-					}
-				}
-			};
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+        if (request.readyState === 4 && typeof onSuccess === 'function') {
+          try {
+            var data = JSON.parse(request.responseText);
+            onSuccess(data);
+          } catch(e) {
+            // Error parsing the data from the service
+          }
+        }
+      };
 
-			var params = _getURL(options.params);
+      var params = _getURL(options.params);
 
-			request.open('POST', options.source, true);
-			request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-			request.send(params);
+      request.open('POST', options.source, true);
+      request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      request.send(params);
 
-		};
+    };
 
   };
 
