@@ -33,6 +33,37 @@ window.Charts = (function(namespace) {
   var Util = function() {
 
 		/**
+		 * @param {String} path 
+		 * @param {Function} onLoad
+		 * @method injectScript  
+		 * @public
+		 */
+
+		this.injectScript = function(path, onLoad) {
+
+      var script= document.createElement('script');
+
+      script.type= 'text/javascript';
+      script.src= path;
+
+      var head= document.getElementsByTagName('head')[0];
+      head.appendChild(script);
+
+      if (typeof scriptElement.onreadystatechange !== 'undefined') {
+
+        scriptElement.onreadystatechange = function() {
+          if (this.readyState === 'complete') {
+            onLoad();
+          }
+        };
+
+      } else {
+        scriptElement.onload = onLoad;
+      }
+
+		};
+
+		/**
 		 * @param {Function} onSuccess
 		 * @param {Object} options 
 		 * @method fetch

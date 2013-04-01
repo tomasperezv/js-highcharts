@@ -58,6 +58,8 @@ window.Charts = (function(namespace) {
 
     var _dispatch = function(event) {
 
+			console.log('dispatch ' + event);
+
       var listeners = callbacks[event];
 
       for (var i = 0; i < listeners.length; i++) {
@@ -139,33 +141,6 @@ window.Charts = (function(namespace) {
     };
 
     /**
-     * @param {HTMLElement} scriptElement
-     * @method _attachEvents
-     * @private
-     */
-
-    var _attachEvents = function(scriptElement) {
-
-      var onLoaded = function() {
-        loaded = true;
-        _dispatch('load');
-      };
-
-      if (typeof scriptElement.onreadystatechange !== 'undefined') {
-
-        scriptElement.onreadystatechange = function() {
-          if (this.readyState === 'complete') {
-            onLoaded();
-          }
-        };
-
-      } else {
-        scriptElement.onload = onLoaded;
-      }
-
-    };
-
-    /**
      * Inject the highcharts library
      *
      * @method load
@@ -174,15 +149,10 @@ window.Charts = (function(namespace) {
 
     this.load = function() {
 
-      var script= document.createElement('script');
-
-      script.type= 'text/javascript';
-      script.src= constants.path;
-
-      var head= document.getElementsByTagName('head')[0];
-      head.appendChild(script);
-
-      _attachEvents(script);
+			this.Util.injectScript(function() {
+        loaded = true;
+        _dispatch('load');
+      });
 
     };
 
