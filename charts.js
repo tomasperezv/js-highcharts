@@ -58,8 +58,6 @@ window.Charts = (function(namespace) {
 
     var _dispatch = function(event) {
 
-			console.log('dispatch ' + event);
-
       var listeners = callbacks[event];
 
       for (var i = 0; i < listeners.length; i++) {

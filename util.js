@@ -41,10 +41,10 @@ window.Charts = (function(namespace) {
 
 		this.injectScript = function(path, onLoad) {
 
-      var script= document.createElement('script');
+      var script = document.createElement('script');
 
-      script.type= 'text/javascript';
-      script.src= path;
+      script.type = 'text/javascript';
+      script.src = path;
 
       var head= document.getElementsByTagName('head')[0];
       head.appendChild(script);
