@@ -46,19 +46,19 @@ window.Charts = (function(namespace) {
       script.type = 'text/javascript';
       script.src = path;
 
-      var head= document.getElementsByTagName('head')[0];
+      var head = document.getElementsByTagName('head')[0];
       head.appendChild(script);
 
-      if (typeof scriptElement.onreadystatechange !== 'undefined') {
+      if (typeof script.onreadystatechange !== 'undefined') {
 
-        scriptElement.onreadystatechange = function() {
+        script.onreadystatechange = function() {
           if (this.readyState === 'complete') {
             onLoad();
           }
         };
 
       } else {
-        scriptElement.onload = onLoad;
+        script.onload = onLoad;
       }
 
 		};

@@ -147,7 +147,7 @@ window.Charts = (function(namespace) {
 
     this.load = function() {
 
-			this.Util.injectScript(function() {
+			this.Util.injectScript(constants.path, function() {
         loaded = true;
         _dispatch('load');
       });
