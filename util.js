@@ -112,12 +112,3 @@ window.Charts = (function(namespace) {
   return namespace;
 
 })(window.Charts);
-/**
- *  
- */
-/**
- *  
- */
-/**
- *  
- */
