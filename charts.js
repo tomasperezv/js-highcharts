@@ -206,7 +206,7 @@ window.Charts = (function(namespace) {
         var self = this;
         callbacks.load.push(function() {
             self.loadData(args);
-            });
+        });
 
         this.load();
 
@@ -259,6 +259,16 @@ window.Charts = (function(namespace) {
 
       return this;
 
+    };
+
+    /**
+     * @method transform
+     * @public
+     */
+
+    this.reset = function() {
+      result = {};
+      data = null;
     };
 
   };
