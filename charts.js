@@ -74,6 +74,12 @@ window.Charts = (function(namespace) {
 
         if (typeof listeners[i] === 'function' && (typeof listeners[i].id === 'undefined' || listeners[i].id === id)) {
           listeners[i](id);
+
+					// Clear the event
+					if (typeof listeners[i].id !== 'undefined') {
+						listeners[i].splice(i, 1);
+					}
+
         }
 
       }
@@ -247,8 +253,8 @@ window.Charts = (function(namespace) {
 
         var self = this;
         callbacks.loadData.push(function() {
-            self.transform(callback, callerId);
-            });
+					self.transform(callback, callerId);
+        });
 
         this.callerId = callerId;
 
